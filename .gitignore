@@ -1,5 +1,35 @@
-postgres/data
-mongodb/data
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
 
+# Node.js
+node_modules/
 
+# Vue
+vue/node_modules/
+vue/dist/
+vue/build/
+vue/.env
+vue/.env.local
+
+# Laravel
+laravel/vendor/
+laravel/node_modules/
+laravel/public/storage
+laravel/storage/logs
+laravel/bootstrap/cache
+
+# Postgres
+postgres/data/
+
+# MongoDB
+mongodb/data/
+
+# Nginx
+nginx/logs/
+
+# Apache
+apache/logs/
 
