@@ -83,3 +83,17 @@ services:
         - VITE_API_BASE_URL=http://laravel:8000/api
         - CHOKIDAR_USEPOLLING=true
 
+    python:
+        build:
+            context: ./python
+        restart: always
+        ports:
+        - "5000:5000"
+        depends_on:
+        - mongodb
+        networks:
+        - laravel
+        environment:
+        - MONGO_URI=mongodb://root:root@mongodb:27017/
+
+
