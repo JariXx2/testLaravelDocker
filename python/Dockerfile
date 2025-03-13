@@ -4,13 +4,17 @@ FROM python:3.10-slim
 RUN pip install --upgrade pip
 
 # Установка основных библиотек
-RUN pip install \
+RUN pip install --default-timeout=900 \
     flask \
     tensorflow \
     torch \
     pandas \
     numpy \
     pymongo
+
+# Установка переменной окружения FLASK_APP
+ENV FLASK_APP=main.py
+
 
 # Настройка рабочей директории
 WORKDIR /app
@@ -19,4 +23,6 @@ WORKDIR /app
 COPY . .
 
 # Запуск приложения
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["python", "main.py"]
+
+

@@ -96,4 +96,70 @@ services:
         environment:
         - MONGO_URI=mongodb://root:root@mongodb:27017/
 
+    prometheus:
+        image: prom/prometheus
+        container_name: prometheus
+        volumes:
+        - ./prometheus/promdata:/prometheus/data
+        - ./prometheus/promconfig:/etc/prometheus/
+        command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--storage.tsdb.path=/prometheus/data'
+        - '--web.enable-lifecycle'
+        ports:
+        - "9090:9090"
+        depends_on:
+        - cadvisor
+
+    grafana:
+        image: grafana/grafana
+        container_name: grafana
+        volumes:
+        - ./grafana:/var/lib/grafana
+        ports:
+        - "3000:3000"
+        environment:
+        - GF_SECURITY_ADMIN_PASSWORD=your_password
+
+    cadvisor:
+        image: google/cadvisor
+        container_name: cadvisor
+        ports:
+        - "9200:8080"
+        volumes:
+        - "/:/rootfs:ro"
+        - "/var/run:/var/run:rw"
+        - "/sys:/sys:ro"
+        - "/var/lib/docker/:/var/lib/docker:ro"
+        restart: unless-stopped
+
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+        container_name: elasticsearch
+        environment:
+        - xpack.security.enabled=false
+        volumes:
+        - ./elk/elasticsearch:/usr/share/elasticsearch/data
+        ports:
+        - "9201:9200"
+
+    logstash:
+        image: docker.elastic.co/logstash/logstash:8.6.2
+        container_name: logstash
+        volumes:
+        - ./elk/logstash.conf:/etc/logstash/conf.d/logstash.conf
+        ports:
+        - "5000:5000"
+        depends_on:
+        - elasticsearch
+
+    kibana:
+        image: docker.elastic.co/kibana/kibana:8.6.2
+        container_name: kibana
+        environment:
+        - ELASTICSEARCH_URL=http://elasticsearch:9200
+        ports:
+        - "5601:5601"
+        depends_on:
+        - elasticsearch
 
